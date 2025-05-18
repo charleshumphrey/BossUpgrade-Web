@@ -15,7 +15,7 @@ class FirebaseService
 
     public function __construct()
     {
-        $firebase = (new Factory)->withServiceAccount(config('firebase.credentials'))
+        $firebase = (new Factory)->withServiceAccount(base_path('storage/serviceaccountkey/firebase_credentials.json'))
             ->withDatabaseUri('https://bossupgrade-101-default-rtdb.firebaseio.com');
 
         $this->database = $firebase->createDatabase();

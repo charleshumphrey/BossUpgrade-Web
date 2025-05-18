@@ -1,7 +1,7 @@
-# Use official PHP-Apache base image
+# Use the official PHP-Apache image
 FROM php:8.2-apache
 
-# Install system dependencies and PHP extensions
+# Install system packages and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -18,33 +18,31 @@ RUN a2enmod rewrite
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Set working directory inside container
 WORKDIR /var/www
 
-# Copy Laravel app files
+# Copy entire Laravel app into container
 COPY . .
 
-# Set correct Apache DocumentRoot to /public
+# Set Laravel's public folder as Apache document root
 ENV APACHE_DOCUMENT_ROOT=/var/www/public
 
-# Update Apache config to point to /public
+# Update Apache configuration to serve from /public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf
 
-# Fix permissions
+# Fix permissions for Laravel directories and Firebase credentials
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/database \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache /var/www/database
 
-# Install PHP dependencies
+# Install Laravel dependencies (no dev dependencies for production)
 RUN composer install --no-dev --optimize-autoloader
 
-# Generate Laravel app key if not set via env (optional fallback)
-# RUN php artisan key:generate
+# Ensure the SQLite file exists for sessions
+RUN touch /var/www/database/database.sqlite \
+    && chown www-data:www-data /var/www/database/database.sqlite
 
-# Run migrations (optional; use with caution if DB migrations needed)
-# RUN php artisan migrate --force
-
-# Expose HTTP port
+# Expose port 80 for Apache
 EXPOSE 80
 
-# Start Apache
+# Start Apache when container launches
 CMD ["apache2-foreground"]
