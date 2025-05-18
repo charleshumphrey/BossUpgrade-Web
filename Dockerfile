@@ -3,6 +3,9 @@ FROM php:8.2-apache
 
 # Set environment variables for timezone
 ENV TZ=UTC
+RUN apt-get install -y tzdata \
+ && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+ && echo $TZ > /etc/timezone
 
 # Install system dependencies, timezone info, and PHP extensions
 RUN apt-get update && apt-get install -y \
@@ -30,6 +33,10 @@ WORKDIR /var/www
 
 # Copy all project files into container
 COPY . .
+
+RUN mkdir -p /var/www/storage/serviceaccountkey \
+ && chown -R www-data:www-data /var/www/storage \
+ && chmod -R 775 /var/www/storage
 
 # Set Apache to use Laravel public directory
 ENV APACHE_DOCUMENT_ROOT=/var/www/public
