@@ -1,7 +1,10 @@
-# Use the official PHP-Apache image
+# Use official PHP Apache image
 FROM php:8.2-apache
 
-# Install system packages and PHP extensions
+# Set environment variables for timezone
+ENV TZ=UTC
+
+# Install system dependencies, timezone info, and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -10,39 +13,39 @@ RUN apt-get update && apt-get install -y \
     zip \
     sqlite3 \
     libsqlite3-dev \
+    tzdata \
     && docker-php-ext-install pdo pdo_sqlite mbstring zip bcmath
 
-# Enable Apache mod_rewrite
+# Set timezone inside container
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Enable Apache rewrite module
 RUN a2enmod rewrite
 
-# Install Composer
+# Install Composer from Composer image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory inside container
+# Set working directory
 WORKDIR /var/www
 
-# Copy entire Laravel app into container
+# Copy all project files into container
 COPY . .
 
-# Set Laravel's public folder as Apache document root
+# Set Apache to use Laravel public directory
 ENV APACHE_DOCUMENT_ROOT=/var/www/public
-
-# Update Apache configuration to serve from /public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf
 
-# Fix permissions for Laravel directories and Firebase credentials
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/database \
+# Ensure Laravel directories and Firebase credentials are accessible
+RUN mkdir -p /var/www/storage/serviceaccountkey \
+    && touch /var/www/database/database.sqlite \
+    && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/database \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache /var/www/database
 
-# Install Laravel dependencies (no dev dependencies for production)
+# Install PHP dependencies without dev packages
 RUN composer install --no-dev --optimize-autoloader
 
-# Ensure the SQLite file exists for sessions
-RUN touch /var/www/database/database.sqlite \
-    && chown www-data:www-data /var/www/database/database.sqlite
-
-# Expose port 80 for Apache
+# Expose web server port
 EXPOSE 80
 
-# Start Apache when container launches
+# Start Apache server
 CMD ["apache2-foreground"]
