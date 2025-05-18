@@ -96,4 +96,28 @@ class ArchiveController extends Controller
             return redirect()->route('archive.index')->with('error', 'Failed to Category.');
         }
     }
+
+    public function restore($menuId)
+    {
+        try {
+            $database = $this->firebaseService->getDatabase();
+
+            // Step 1: Get archived item
+            $archivedData = $database->getReference('archives/menu/' . $menuId)->getValue();
+
+            if (!$archivedData) {
+                return redirect()->route('archive.index')->with('error', 'Menu item not found in archive.');
+            }
+
+            // Step 2: Restore it to the main menu path
+            $database->getReference('menu/' . $menuId)->set($archivedData);
+
+            // Step 3: Remove it from archive
+            $database->getReference('archives/menu/' . $menuId)->remove();
+
+            return redirect()->route('archive.index')->with('success', 'Menu Item restored successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('archive.index')->with('error', 'Failed to restore menu item.');
+        }
+    }
 }

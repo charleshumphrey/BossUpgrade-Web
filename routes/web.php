@@ -255,6 +255,11 @@ Route::delete(
     [ArchiveController::class, 'destroy']
 )->name('archive.destroy');
 
+Route::patch(
+    '/archive/restore/{menuId}',
+    [ArchiveController::class, 'restore']
+)->name('archive.restore');
+
 //FAQs
 Route::get(
     '/faq',
@@ -286,3 +291,12 @@ Route::delete(
     '/promotions/{key}',
     [PromotionsController::class, 'destroy']
 )->name('promotions.destroy');
+
+Route::get('/check-firebase-key', function () {
+    $path = env('GOOGLE_APPLICATION_CREDENTIALS');
+    return [
+        'path' => $path,
+        'exists' => file_exists($path),
+        'is_readable' => is_readable($path),
+    ];
+});

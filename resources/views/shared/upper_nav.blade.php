@@ -18,9 +18,9 @@
                 <a class="navbar-link">
                     <div class="user-avatar">
                         <!-- <img src="{{ asset('build/assets/images/avatar-default-symbolic-svgrepo-com.svg') }}" alt="Profile_Image" class="rounded-full"> -->
-                        <img class="rounded-full" src="{{ Session::get('user')['profileImage'] }}" alt="user_profile">
+                        <img class="rounded-full" src="{{ Session::get('user')['profileImage']??"Admin"  }}" alt="user_profile">
                     </div>
-                    <div class="is-user-name"><span class="">{{ Session::get('user')['username'] }}</span></div>
+                    <div class="is-user-name"><span class="">{{ Session::get('user')['username']??"Admin" }}</span></div>
                     <span class="icon"><i class="mdi mdi-chevron-down"></i></span>
                 </a>
                 <div class="text-black navbar-dropdown">

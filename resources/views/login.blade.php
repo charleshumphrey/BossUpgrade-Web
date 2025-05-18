@@ -8,9 +8,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite('resources/css/app.css')
-    @vite('resources/css/all.min.css')
-    @vite('resources/css/fontawesome.min.css')
-    @vite('resources/js/app.js')
+
     @vite('resources/js/app.js')
 </head>
 
@@ -37,7 +35,7 @@
                 <div class="md:hidden h-20 w-20 self-center rounded-md mb-8">
                     <img src="{{ asset('build/assets/images/BossUpgrade_logo.jpg') }}" alt="">
                 </div>
-                <form action="{{ route('login-auth') }}" class="w-full flex flex-col gap-4">
+                <form action="{{ route('login-auth') }}" method="GET" class="w-full flex flex-col gap-4">
                     @csrf
                     <h1 class="self-center font-poppins_regular font-bold text-md md:text-lg text-gray-800">Login</h1>
 

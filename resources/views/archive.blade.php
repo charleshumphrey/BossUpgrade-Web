@@ -10,7 +10,6 @@
 
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
-    @vite('resources/js/archive.js')
 
 </head>
 
@@ -93,12 +92,32 @@
                                     <button class="button small blue --jb-modal" data-target="archive-modal{{ $item['menuId'] }}" type="button">
                                         <span class="icon"><i class="mdi mdi-package-up"></i></span>
                                     </button>
-                                    <button class="button small red --jb-modal" data-target="delete-modal{{$item['menuId']}}" type="button">
+                                    <!-- <button class="button small red --jb-modal" data-target="delete-modal{{$item['menuId']}}" type="button">
                                         <span class="icon"><i class="mdi mdi-trash-can"></i></span>
-                                    </button>
+                                    </button> -->
                                 </div>
                             </td>
                         </tr>
+                        <div id="archive-modal{{ $item['menuId'] }}" class="modal hidden">
+                            <div class="modal-background --jb-modal-close"></div>
+                            <div class="modal-card">
+                                <header class="modal-card-head">
+                                    <i class="mdi mdi-package-up text-blue-500 mr-4 text-lg"></i>
+                                    <p class="modal-card-title text-black">Confirm <span class="text-blue-500">Unarchive</span></p>
+                                </header>
+                                <section class="modal-card-body text-gray-700">
+                                    <p>Are you sure you want to <span class="text-blue-500">restore</span> this item from archive? It will be made available to users again.</p>
+                                </section>
+                                <footer class="modal-card-foot justify-end">
+                                    <button class="button --jb-modal-close">Cancel</button>
+                                    <form action="{{ route('archive.restore', $item['menuId']) }}" method="POST" class="inline-block ml-4">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="button blue archive-confirm">Confirm</button>
+                                    </form>
+                                </footer>
+                            </div>
+                        </div>
 
                         <div id="delete-modal{{ $item['menuId'] }}" class="modal hidden">
                             <div class="modal-background --jb-modal-close"></div>
@@ -175,6 +194,7 @@
     </div>
     <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
+    <script src="../../js/archive.js"></script>
 </body>
 
 </html>

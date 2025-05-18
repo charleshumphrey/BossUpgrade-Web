@@ -33,3 +33,18 @@ document.querySelectorAll("#confirm-archive").forEach((button) => {
             });
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".--jb-modal").forEach((button) => {
+        button.addEventListener("click", () => {
+            const modalId = button.dataset.target;
+            document.getElementById(modalId).classList.remove("hidden");
+        });
+    });
+
+    document.querySelectorAll(".--jb-modal-close").forEach((button) => {
+        button.addEventListener("click", () => {
+            button.closest(".modal").classList.add("hidden");
+        });
+    });
+});

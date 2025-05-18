@@ -47,7 +47,7 @@ class LoginController extends Controller
 
                     Session::put('logged_in', true);
                     Session::put('staffId', $staffId);
-                    Session::put('user', $staffData);
+                    Session::put("user", $staffData);
                     Session::put('permissions', $roleData['permissions']);
 
                     return redirect()->route('dashboard');

@@ -7,15 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }}</title>
-
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
-    @vite('resources/js/archive.js')
 
 </head>
 
 <body>
-    @include('shared.upper_nav')
+
 
     <div class="aside is-placed-left is-expanded bg-black-erie">
         <div class="aside-tools bg-black">
@@ -180,6 +178,7 @@
     </div>
     <!-- Icons below are for demo only. Feel free to use any icon pack. Docs: https://bulma.io/documentation/elements/icon/ -->
     <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
+    <script src="../../js/archive.js"></script>
 </body>
 
 </html>
